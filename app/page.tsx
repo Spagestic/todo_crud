@@ -1,113 +1,191 @@
-import Image from "next/image";
+"use client";
+import React, { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  CheckIcon,
+  Pencil2Icon,
+  TrashIcon,
+  Cross2Icon,
+} from "@radix-ui/react-icons";
+import { ModeToggle } from "@/components/ModeToggle";
+import { v4 as uuidv4 } from "uuid";
+
+// Custom hook for task management
+function useTaskManager(initialTasks: any) {
+  const [tasks, setTasks] = useState(initialTasks);
+
+  const handleAddTask = (text: string) => {
+    if (text.trim() !== "") {
+      setTasks([...tasks, { id: uuidv4(), text, completed: false }]);
+    }
+  };
+
+  const handleToggleTask = (id: any) => {
+    setTasks(
+      tasks.map((task: { id: any; completed: any }) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
+
+  const handleEditTask = (id: any) => {
+    // Assuming editing logic is handled elsewhere
+  };
+
+  const handleUpdateTask = (id: any, text: any) => {
+    setTasks(
+      tasks.map((task: { id: any }) =>
+        task.id === id ? { ...task, text } : task
+      )
+    );
+    // Reset editing state if necessary
+  };
+
+  const handleDeleteTask = (id: any) => {
+    setTasks(tasks.filter((task: { id: any }) => task.id !== id));
+  };
+
+  return [
+    tasks,
+    handleAddTask,
+    handleToggleTask,
+    handleEditTask,
+    handleUpdateTask,
+    handleDeleteTask,
+  ];
+}
 
 export default function Home() {
+  const [tasks, setTasks] = useState([
+    { id: 1, text: "Finish project proposal", completed: false },
+    { id: 2, text: "Schedule meeting with client", completed: false },
+    { id: 3, text: "Buy groceries", completed: true },
+  ]);
+
+  const [newTask, setNewTask] = useState("");
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const handleAddTask = () => {
+    if (newTask.trim() !== "") {
+      setTasks([...tasks, { id: Date.now(), text: newTask, completed: false }]);
+      setNewTask("");
+    }
+  };
+  const handleToggleTask = (id: any) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
+  const handleEditTask = (id: any) => {
+    setEditingTaskId(id);
+  };
+  const handleUpdateTask = (id: any, text: any) => {
+    setTasks(tasks.map((task) => (task.id === id ? { ...task, text } : task)));
+    setEditingTaskId(null);
+  };
+  const handleDeleteTask = (id: any) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="flex flex-col min-h-screen">
+      <header className="py-4 px-6 flex justify-between">
+        <h1 className="text-2xl font-bold">To-Do App</h1>
+        <ModeToggle />
+      </header>
+      <main className="flex-1 p-6">
+        <div className="mb-6 flex gap-2 justify-center items-center">
+          <Input
+            type="text"
+            placeholder="Add a new task"
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleAddTask();
+              }
+            }}
+            className="w-full border-2 border-input rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+          <Button
+            onClick={handleAddTask}
+            variant="default"
+            size={"default"}
+            className=""
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+            Add Task
+          </Button>
         </div>
-      </div>
-
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+        <div className="space-y-2">
+          {tasks.map((task) => (
+            <div
+              key={task.id}
+              className="flex items-center justify-between bg-background border border-input rounded-md px-4 py-2"
+            >
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id={`task-${task.id}`}
+                  checked={task.completed}
+                  onCheckedChange={() => handleToggleTask(task.id)}
+                />
+                {editingTaskId === task.id ? (
+                  <Input
+                    type="text"
+                    defaultValue={task.text}
+                    onBlur={(e) => handleUpdateTask(task.id, e.target.value)}
+                    onKeyDown={(e: any) => {
+                      if (e.key === "Enter") {
+                        handleUpdateTask(task.id, e.target.value);
+                      }
+                    }}
+                    className="w-full border-2 border-input rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-primary"
+                  />
+                ) : (
+                  <label
+                    htmlFor={`task-${task.id}`}
+                    className={`text-base ${
+                      task.completed
+                        ? "line-through text-muted-foreground"
+                        : "font-medium"
+                    }`}
+                  >
+                    {task.text}
+                  </label>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                {editingTaskId === task.id ? (
+                  <>
+                    <Button
+                      size="icon"
+                      onClick={() => handleUpdateTask(task.id, task.text)}
+                    >
+                      <CheckIcon className="w-4 h-4" />
+                    </Button>
+                    <Button size="icon" onClick={() => setEditingTaskId(null)}>
+                      <Cross2Icon className="w-4 h-4" />
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button size="icon" onClick={() => handleEditTask(task.id)}>
+                      <Pencil2Icon className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      onClick={() => handleDeleteTask(task.id)}
+                    >
+                      <TrashIcon className="w-4 h-4" />
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </main>
+    </div>
   );
 }
