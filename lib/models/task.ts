@@ -7,11 +7,15 @@ const TaskSchema = new mongoose.Schema({
   },
   completed: {
     type: Boolean,
-    required: true,
+    default: false,
   },
   time: {
     type: Date,
     default: Date.now,
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
   },
 });
 
