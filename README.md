@@ -1,3 +1,5 @@
+![Demo Image](public/demo.png)
+
 # Todo CRUD App
 
 A full-stack Todo application built with Next.js, MongoDB, TypeScript, Tailwind CSS, REST API, and Auth0 for authentication.
