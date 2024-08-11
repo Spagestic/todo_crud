@@ -62,7 +62,7 @@ export async function createTask(taskData: Params) {
 }
 
 // Function to update a task
-export async function updateTaskTitle(id: string, title: string, time?: Date) {
+export async function updateTaskTitle(id: string, title: string) {
   try {
     // Connect to database
     await connectToDatabase();
@@ -70,6 +70,27 @@ export async function updateTaskTitle(id: string, title: string, time?: Date) {
     const updatedTask = await Task.findByIdAndUpdate(
       id,
       { $set: { title } },
+      { new: true }
+    );
+    // Return the updated task
+    console.log("Task updated:", updatedTask);
+    revalidatePath("/");
+  } catch (error) {
+    // Log and return error
+    console.error("Error updating task: ", error);
+    return error;
+  }
+}
+
+// Function to update a task's time
+export async function updateTaskTime(id: string, time: Date) {
+  try {
+    // Connect to database
+    await connectToDatabase();
+    // Update the task
+    const updatedTask = await Task.findByIdAndUpdate(
+      id,
+      { $set: { time } },
       { new: true }
     );
     // Return the updated task
