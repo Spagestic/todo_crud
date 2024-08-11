@@ -1,6 +1,7 @@
 // UserButton.js
 "use client";
 import React, { Suspense } from "react";
+import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +13,7 @@ import {
 import { useUser } from "@auth0/nextjs-auth0/client";
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { PersonIcon } from "@radix-ui/react-icons";
+import { PersonIcon, ExitIcon } from "@radix-ui/react-icons";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const UserButton = () => {
@@ -37,7 +38,7 @@ const UserButton = () => {
           /> */}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent className="mr-4">
         <DropdownMenuItem>
           <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
         </DropdownMenuItem>
@@ -45,10 +46,13 @@ const UserButton = () => {
         <DropdownMenuItem>
           <a href="/profile-client">Profile</a>
         </DropdownMenuItem> */}
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <a href="/api/auth/logout">Log Out</a>
-        </DropdownMenuItem>
+        <DropdownMenuSeparator />{" "}
+        <Link href="/api/auth/logout" className="">
+          <DropdownMenuItem>
+            <ExitIcon className="mr-2 h-4 w-4" />
+            <span className="">Log Out</span>
+          </DropdownMenuItem>
+        </Link>
       </DropdownMenuContent>
     </DropdownMenu>
   );
