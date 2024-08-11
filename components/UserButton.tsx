@@ -20,6 +20,20 @@ const UserButton = () => {
   const { user, isLoading } = useUser();
   // console.log("User:", user);
 
+  const handleLogout = () => {
+    // Clear cookies and local storage
+    document.cookie.split(";").forEach((c) => {
+      document.cookie = c
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Redirect to Auth0 logout endpoint
+    window.location.href = "/api/auth/logout";
+  };
+
   if (isLoading || !user) {
     return <Skeleton className="w-8 h-8 rounded-full mx-2" />;
   }
@@ -47,12 +61,12 @@ const UserButton = () => {
           <a href="/profile-client">Profile</a>
         </DropdownMenuItem> */}
         <DropdownMenuSeparator />{" "}
-        <Link href="/api/auth/logout" className="">
-          <DropdownMenuItem>
-            <ExitIcon className="mr-2 h-4 w-4" />
-            <span className="">Log Out</span>
-          </DropdownMenuItem>
-        </Link>
+        <DropdownMenuItem onClick={handleLogout}>
+          {/* <Link href="/api/auth/logout" className=""> */}
+          <ExitIcon className="mr-2 h-4 w-4" />
+          <span className="">Log Out</span>
+          {/* </Link> */}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
