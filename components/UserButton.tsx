@@ -1,6 +1,6 @@
-// UserDropdown.js
+// UserButton.js
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,13 +13,14 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { PersonIcon } from "@radix-ui/react-icons";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const UserButton = () => {
   const { user, isLoading } = useUser();
   // console.log("User:", user);
 
   if (isLoading || !user) {
-    return null;
+    return <Skeleton className="w-8 h-8 rounded-full mx-2" />;
   }
 
   return (
