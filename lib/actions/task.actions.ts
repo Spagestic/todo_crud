@@ -40,6 +40,7 @@ export async function getTask(id: string) {
 interface Params {
   user: string;
   title: string;
+  time?: Date;
 }
 
 // Function to create a task
@@ -61,7 +62,7 @@ export async function createTask(taskData: Params) {
 }
 
 // Function to update a task
-export async function updateTaskTitle(id: string, title: string) {
+export async function updateTaskTitle(id: string, title: string, time?: Date) {
   try {
     // Connect to database
     await connectToDatabase();

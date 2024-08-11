@@ -12,10 +12,11 @@ import { CheckIcon, Cross2Icon, Pencil2Icon } from "@radix-ui/react-icons";
 interface TaskProps {
   id: string;
   title: string;
+  time: Date;
   completed: boolean;
 }
 
-export const Task = ({ id, title, completed }: TaskProps) => {
+export const Task = ({ id, title, time, completed }: TaskProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const handleUpdate = (value: string) => {
@@ -54,8 +55,16 @@ export const Task = ({ id, title, completed }: TaskProps) => {
             className="w-full border-2 border-input rounded-md mr-4 focus:outline-none focus:ring-1 focus:ring-primary"
           />
         ) : (
-          <p className={`text-lg ${completed ? "line-through" : ""}`}>
-            {title}
+          <p
+            className={`w-full pr-6 text-lg flex flex-col justify-between ${
+              completed ? "line-through" : ""
+            }`}
+          >
+            <span>{title}</span>
+            <span className="text-xs text-gray-500">
+              Due on {time.toLocaleDateString()} at {time.toLocaleTimeString()}
+              {/* Show how many days/time left */}
+            </span>
           </p>
         )}
       </div>
@@ -74,7 +83,7 @@ export const Task = ({ id, title, completed }: TaskProps) => {
             <Button
               size="icon"
               onClick={() => {
-                console.log("Cross Task:", id);
+                // console.log("Cross Task:", id);
                 setIsEditing(false);
               }}
             >
@@ -86,7 +95,7 @@ export const Task = ({ id, title, completed }: TaskProps) => {
             <Button
               size="icon"
               onClick={() => {
-                console.log("Edit Task:", id);
+                // console.log("Edit Task:", id);
                 setIsEditing(true);
               }}
             >

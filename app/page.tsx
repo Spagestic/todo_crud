@@ -46,6 +46,7 @@ export default withPageAuthRequired(async function Home() {
                 key={task._id.toString("hex")}
                 id={task._id.toString("hex")}
                 title={task.title}
+                time={task.time}
                 completed={task.completed}
               />
             ))

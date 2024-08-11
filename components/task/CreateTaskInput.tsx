@@ -4,17 +4,35 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createTask } from "@/lib/actions/task.actions";
+import { addDays, format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { DateTimePicker } from "@/components/ui/datetime-picker";
 
 export default function CreateTaskInput({ userId }: { userId: string }) {
   // console.log("userId:", userId);
   const [newTask, setNewTask] = useState("");
+  const [time, setTime] = React.useState<Date>();
   const [isAdding, setIsAdding] = useState(false);
 
   const handleAddTask = async () => {
     if (newTask.trim() !== "") {
       setIsAdding(true);
       try {
-        await createTask({ user: userId, title: newTask });
+        await createTask({ user: userId, title: newTask, time: time });
         setNewTask(""); // Clear the input field
       } catch (error) {
         console.error("Failed to add task:", error);
@@ -38,6 +56,7 @@ export default function CreateTaskInput({ userId }: { userId: string }) {
         }}
         className="w-full border-2 border-input rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-primary"
       />
+      <DateTimePicker value={time} onChange={setTime} />
       <Button
         onClick={handleAddTask}
         variant="default"
